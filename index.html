@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#090b0f">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Rogue Maul">
+  <title>Rogue Maul</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="TemplateData/icon-192.png">
+  <link rel="stylesheet" href="TemplateData/style.css">
+</head>
+<body>
+  <main id="app-shell" aria-label="Rogue Maul game">
+    <canvas id="unity-canvas" width=960 height=600 tabindex="0" aria-label="Rogue Maul battlefield"></canvas>
+    <section id="loading" aria-live="polite">
+      <div class="maul-mark" aria-hidden="true">RM</div>
+      <h1>ROGUE MAUL</h1>
+      <p id="loading-status">Preparing the command deck...</p>
+      <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="progress-fill"></div>
+      </div>
+      <strong id="progress-label">0%</strong>
+    </section>
+    <section id="fatal-error" class="hidden" role="alert">
+      <h2>BUILD RECOVERY</h2>
+      <p id="fatal-message">Rogue Maul could not start.</p>
+      <div class="error-actions">
+        <button id="retry-button" type="button">Retry</button>
+        <button id="refresh-build-button" type="button">Refresh Build Cache</button>
+        <button id="open-direct-button" class="hidden" type="button">Open Rogue Maul Directly</button>
+      </div>
+    </section>
+    <section id="ios-install" class="hidden" role="dialog" aria-labelledby="ios-install-title" aria-modal="true">
+      <div class="install-icon" aria-hidden="true">RM</div>
+      <h2 id="ios-install-title">INSTALL ON IPHONE OR IPAD BEFORE PLAYING</h2>
+      <p id="ios-install-summary">Safari and Home Screen apps keep separate save data. Install first so crystals and Command Web progress stay in one place.</p>
+      <ol id="ios-install-steps" class="install-steps">
+        <li>Tap Safari's <strong>Share</strong> button.</li>
+        <li>Choose <strong>Add to Home Screen</strong>.</li>
+        <li>Open <strong>Rogue Maul</strong> from its new icon.</li>
+      </ol>
+      <p id="ios-install-note" class="install-note">Requires iOS 15 or newer. On iOS 15/16, browser storage is best-effort; use the Command Web save backup controls.</p>
+      <div id="legacy-save-recovery" class="legacy-save-recovery hidden">
+        <p><strong>Already played at this address?</strong> Safari keeps that older save separate from the installed app.</p>
+        <button id="legacy-save-button" type="button">Recover Existing Safari Save</button>
+        <p>A backup-only recovery screen will open. Download the old save, return here, install Rogue Maul, and restore the file from Command Web. Gameplay remains disabled in recovery.</p>
+      </div>
+    </section>
+    <section id="rotate-device" aria-live="polite">
+      <div class="rotate-icon" aria-hidden="true"></div>
+      <h2>ROTATE TO LANDSCAPE</h2>
+      <p>Rogue Maul uses the full width for the battlefield and command deck.</p>
+    </section>
+    <div id="unity-warning" aria-live="assertive"></div>
+  </main>
+  <script>
+    const canvas = document.querySelector("#unity-canvas");
+    const appShell = document.querySelector("#app-shell");
+    const loading = document.querySelector("#loading");
+    const loadingStatus = document.querySelector("#loading-status");
+    const progressFill = document.querySelector("#progress-fill");
+    const progressLabel = document.querySelector("#progress-label");
+    const progressTrack = document.querySelector(".progress-track");
+    const fatalError = document.querySelector("#fatal-error");
+    const fatalMessage = document.querySelector("#fatal-message");
+    const iosInstall = document.querySelector("#ios-install");
+    const iosInstallTitle = document.querySelector("#ios-install-title");
+    const iosInstallSummary = document.querySelector("#ios-install-summary");
+    const iosInstallSteps = document.querySelector("#ios-install-steps");
+    const iosInstallNote = document.querySelector("#ios-install-note");
+    const legacySaveRecovery = document.querySelector("#legacy-save-recovery");
+    const legacySaveButton = document.querySelector("#legacy-save-button");
+    const openDirectButton = document.querySelector("#open-direct-button");
+    const warningBanner = document.querySelector("#unity-warning");
+    let unityStarted = false;
+    let viewportFrame = 0;
+    let storagePersistenceRequest = null;
+    let storagePersistenceStatus = "not-requested";
+    let contextRecoveryTimer = 0;
+    let webGL2Available = null;
+    let legacyRecoveryRequested = false;
+
+    const buildUrl = "Build";
+    const loaderUrl = buildUrl + "/RogueMaulMobileWebRelease.loader.js";
+    const config = {
+      arguments: [],
+      dataUrl: buildUrl + "/RogueMaulMobileWebRelease.data.unityweb",
+      frameworkUrl: buildUrl + "/RogueMaulMobileWebRelease.framework.js.unityweb",
+      codeUrl: buildUrl + "/RogueMaulMobileWebRelease.wasm.unityweb",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "Jay Carr",
+      productName: "Rogue Maul",
+      productVersion: "1.1.0",
+      // RogueMaulWeb.jslib owns serialized syncfs calls so save state is
+      // reported only after IndexedDB confirms persistence.
+      autoSyncPersistentDataPath: false,
+      devicePixelRatio: Math.min(window.devicePixelRatio || 1, 1.35),
+      showBanner: showBanner
+    };
+
+    function setProgress(value) {
+      const percent = Math.max(0, Math.min(100, Math.round(value * 100)));
+      progressFill.style.width = percent + "%";
+      progressLabel.textContent = percent + "%";
+      progressTrack.setAttribute("aria-valuenow", String(percent));
+      loadingStatus.textContent = percent < 35 ? "Loading battlefield data..." : percent < 85 ? "Forging towers and routes..." : "Opening the command deck...";
+    }
+
+    function showBanner(message, type) {
+      const item = document.createElement("div");
+      item.className = "banner " + (type || "info");
+      item.textContent = message;
+      warningBanner.appendChild(item);
+      if (type !== "error") setTimeout(() => item.remove(), 7000);
+    }
+
+    function showFatal(message) {
+      loading.classList.add("hidden");
+      iosInstall.classList.add("hidden");
+      fatalMessage.textContent = String(message || "The browser stopped the build before startup completed.");
+      fatalError.classList.remove("hidden");
+    }
+
+    function isAppleMobileDevice() {
+      const userAgent = navigator.userAgent || "";
+      return /iPhone|iPad|iPod/i.test(userAgent)
+        || (navigator.platform === "MacIntel" && (navigator.maxTouchPoints || 0) > 1);
+    }
+
+    function isStandaloneDisplayMode() {
+      return navigator.standalone === true
+        || (typeof window.matchMedia === "function" && window.matchMedia("(display-mode: standalone)").matches)
+        || (typeof window.matchMedia === "function" && window.matchMedia("(display-mode: fullscreen)").matches);
+    }
+
+    function isMobileSafari() {
+      const userAgent = navigator.userAgent || "";
+      return isAppleMobileDevice()
+        && /Version\/[\d.]+.*Safari/i.test(userAgent)
+        && !/(CriOS|FxiOS|EdgiOS|OPiOS|DuckDuckGo|Brave|GSA|FBAN|FBAV|Instagram)/i.test(userAgent);
+    }
+
+    function supportsWebGL2() {
+      if (webGL2Available !== null) return webGL2Available;
+      if (!("WebGL2RenderingContext" in window)) {
+        webGL2Available = false;
+        return false;
+      }
+      try {
+        const probe = document.createElement("canvas");
+        const context = probe.getContext("webgl2");
+        webGL2Available = Boolean(context);
+        const release = context && context.getExtension("WEBGL_lose_context");
+        if (release) release.loseContext();
+      } catch (error) {
+        webGL2Available = false;
+      }
+      return webGL2Available;
+    }
+
+    function syncVisibleViewport() {
+      viewportFrame = 0;
+      const viewport = window.visualViewport;
+      const useVisualViewport = !isStandaloneDisplayMode() && viewport && viewport.width && viewport.height;
+      const width = Math.max(1, Math.round(useVisualViewport ? viewport.width : window.innerWidth));
+      const height = Math.max(1, Math.round(useVisualViewport ? viewport.height : window.innerHeight));
+      document.documentElement.style.setProperty("--app-width", width + "px");
+      document.documentElement.style.setProperty("--app-height", height + "px");
+    }
+
+    function scheduleViewportSync() {
+      if (!viewportFrame) viewportFrame = requestAnimationFrame(syncVisibleViewport);
+    }
+
+    async function requestPersistentStorage() {
+      if (storagePersistenceRequest) return storagePersistenceRequest;
+      storagePersistenceRequest = (async () => {
+        if (!navigator.storage || typeof navigator.storage.persist !== "function") {
+          storagePersistenceStatus = "unsupported";
+          showBanner("This iPhone uses best-effort browser storage. Back up progression from Command Web after every session.", "warning");
+          return false;
+        }
+        try {
+          const alreadyPersistent = typeof navigator.storage.persisted === "function"
+            && await navigator.storage.persisted();
+          const persistent = alreadyPersistent || await navigator.storage.persist();
+          storagePersistenceStatus = persistent ? "granted" : "best-effort";
+          if (!persistent) showBanner("iPhone storage remains best-effort. Keep Rogue Maul installed and open it periodically.", "warning");
+          return persistent;
+        } catch (error) {
+          storagePersistenceStatus = "unavailable";
+          showBanner("Persistent browser storage is unavailable: " + error.message, "warning");
+          return false;
+        }
+      })();
+      return storagePersistenceRequest;
+    }
+
+    function showIPhoneInstallGate() {
+      loading.classList.add("hidden");
+      fatalError.classList.add("hidden");
+      if (!isMobileSafari()) {
+        iosInstallTitle.textContent = "OPEN THIS PAGE IN SAFARI";
+        iosInstallSummary.textContent = "Apple requires Safari to add Rogue Maul to the Home Screen. Open this same link in Safari before starting a run.";
+        iosInstallSteps.innerHTML = "<li>Copy this page's address.</li><li>Open Safari and paste the address.</li><li>Tap <strong>Share</strong>, choose <strong>Add to Home Screen</strong>, then open the new icon.</li>";
+        iosInstallNote.textContent = "Chrome, Firefox, and Edge on iPhone or iPad cannot complete this install step.";
+      } else {
+        legacySaveRecovery.classList.remove("hidden");
+      }
+      iosInstall.classList.remove("hidden");
+    }
+
+    function currentCachePrefix() {
+      const scopePath = new URL("./", location.href).pathname;
+      return "RogueMaul-" + encodeURIComponent(scopePath) + "-";
+    }
+
+    async function clearBuildCache() {
+      if ("serviceWorker" in navigator) {
+        const registration = await navigator.serviceWorker.getRegistration("./");
+        if (registration) await registration.unregister();
+      }
+      if ("caches" in window) {
+        const names = await caches.keys();
+        const prefix = currentCachePrefix();
+        await Promise.all(names.filter(name => name.startsWith(prefix)).map(name => caches.delete(name)));
+      }
+      location.reload();
+    }
+
+    async function registerOfflineWorker() {
+      let registration;
+      try {
+        registration = await navigator.serviceWorker.register("ServiceWorker.js");
+      } catch (error) {
+        showBanner("Offline install is unavailable: " + error.message, "warning");
+        return;
+      }
+      const announceWaitingUpdate = () => showBanner("A Rogue Maul update is ready. Close every game tab or installed window, then reopen the game to switch releases safely.", "info");
+      if (registration.waiting && navigator.serviceWorker.controller) announceWaitingUpdate();
+      registration.addEventListener("updatefound", () => {
+        const worker = registration.installing;
+        if (!worker) return;
+        worker.addEventListener("statechange", () => {
+          if (worker.state === "installed" && navigator.serviceWorker.controller) announceWaitingUpdate();
+        });
+      });
+      try {
+        await registration.update();
+      } catch (error) {
+        showBanner(navigator.onLine ? "The update check failed; the installed offline release is still available." : "Offline mode active. The update check will retry when the game is online.", "info");
+      }
+    }
+
+    document.querySelector("#retry-button").addEventListener("click", () => location.reload());
+    document.querySelector("#refresh-build-button").addEventListener("click", clearBuildCache);
+    openDirectButton.addEventListener("click", () => window.open(location.href, "_blank", "noopener"));
+    legacySaveButton.addEventListener("click", () => {
+      iosInstall.classList.add("hidden");
+      showBanner("Legacy Safari recovery mode: gameplay is disabled; download the existing save, then return to install.", "warning");
+      startGame(true);
+    });
+    document.addEventListener("contextmenu", event => event.preventDefault());
+    document.addEventListener("gesturestart", event => event.preventDefault());
+    document.addEventListener("touchmove", event => {
+      const target = event.target;
+      if (!target || typeof target.closest !== "function" || !target.closest("#ios-install")) event.preventDefault();
+    }, { passive: false });
+    document.addEventListener("dblclick", event => event.preventDefault());
+
+    canvas.addEventListener("webglcontextlost", event => {
+      event.preventDefault();
+      showBanner("Safari paused the graphics context. Waiting briefly for recovery...", "warning");
+      clearTimeout(contextRecoveryTimer);
+      contextRecoveryTimer = setTimeout(() => showFatal("Safari could not restore graphics. Reload the installed game to continue from the last confirmed save."), 12000);
+    });
+    canvas.addEventListener("webglcontextrestored", () => {
+      clearTimeout(contextRecoveryTimer);
+      contextRecoveryTimer = 0;
+      showBanner("Graphics restored.", "info");
+    });
+
+    function startGame(legacyRecovery) {
+      if (unityStarted) return;
+      unityStarted = true;
+      legacyRecoveryRequested = Boolean(legacyRecovery);
+      config.arguments = legacyRecovery ? ["-rogue-maul-recovery"] : [];
+      document.addEventListener("pointerdown", requestPersistentStorage, { once: true, capture: true });
+      document.addEventListener("touchend", requestPersistentStorage, { once: true, capture: true });
+
+      if (!("WebAssembly" in window) || !supportsWebGL2()) {
+        showFatal("Rogue Maul requires WebGL 2, WebAssembly, and iOS Safari 15 or newer.");
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onerror = () => showFatal("The game loader could not be downloaded. Check the connection and retry.");
+      script.onload = () => {
+        createUnityInstance(canvas, config, setProgress).then(instance => {
+          window.rogueMaul = instance;
+          if (legacyRecoveryRequested) instance.SendMessage("RogueMaulGame", "EnterLegacyRecoveryMode");
+          loading.classList.add("hidden");
+          try {
+            canvas.focus({ preventScroll: true });
+          } catch (error) {
+            canvas.focus();
+          }
+        }).catch(showFatal);
+      };
+      document.body.appendChild(script);
+    }
+
+    window.rogueMaulDiagnostics = () => ({
+      userAgent: navigator.userAgent,
+      appleMobile: isAppleMobileDevice(),
+      mobileSafari: isMobileSafari(),
+      standalone: isStandaloneDisplayMode(),
+      secureContext: window.isSecureContext,
+      webAssembly: "WebAssembly" in window,
+      webGL2: supportsWebGL2(),
+      devicePixelRatio: window.devicePixelRatio || 1,
+      innerWidth: window.innerWidth,
+      innerHeight: window.innerHeight,
+      visualViewportWidth: window.visualViewport ? window.visualViewport.width : null,
+      visualViewportHeight: window.visualViewport ? window.visualViewport.height : null,
+      canvasWidth: canvas.width,
+      canvasHeight: canvas.height,
+      storagePersistenceStatus
+    });
+
+    window.RogueMaulSaveToolsStatus = (message, isError) => {
+      showBanner(message, isError ? "error" : "info");
+    };
+
+    syncVisibleViewport();
+    window.addEventListener("resize", scheduleViewportSync);
+    window.addEventListener("orientationchange", () => setTimeout(scheduleViewportSync, 120));
+    window.addEventListener("pageshow", scheduleViewportSync);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") setTimeout(scheduleViewportSync, 80);
+    });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", scheduleViewportSync);
+      window.visualViewport.addEventListener("scroll", scheduleViewportSync);
+    }
+
+    window.addEventListener("load", () => {
+      if ("serviceWorker" in navigator && window.isSecureContext) {
+        registerOfflineWorker();
+      }
+
+      if (window.top !== window.self) {
+        showFatal("Safari cannot preserve Rogue Maul progress inside an embedded frame. Open the game directly.");
+        openDirectButton.classList.remove("hidden");
+        return;
+      }
+      if (isAppleMobileDevice() && !isStandaloneDisplayMode()) {
+        showIPhoneInstallGate();
+        return;
+      }
+      startGame(false);
+    });
+  </script>
+</body>
+</html>
