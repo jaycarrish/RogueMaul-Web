@@ -1,34 +1,34 @@
 {
     "schemaVersion": 1,
-    "revision": "1c7020e05c477324",
+    "revision": "93c4dfcbce4d0a6f",
     "files": [
         {
-            "path": "Build/RogueMaulMobileWebRelease.data.unityweb",
-            "sha256": "bcdd98e81ca2a3d1b615782f9491371154283955118c691b3564d6532c187117",
-            "bytes": 1577402,
-            "decodedSha256": "abe8d683126c9e1b9505f21d669f668fa77eff279d348743acd53d6b84d81603",
-            "decodedBytes": 5741714
+            "path": "Build/20260726-163512.data.unityweb",
+            "sha256": "3f33f08eae4981d8777653858a85c7bd21fefef453e406fc59c87ca4e5367c48",
+            "bytes": 1582229,
+            "decodedSha256": "94b748ab7a1410a29ef6f03ea85c1ff6037f29a15097c619082fbb1f1b2fdad7",
+            "decodedBytes": 5756876
         },
         {
-            "path": "Build/RogueMaulMobileWebRelease.framework.js.unityweb",
-            "sha256": "d58ae76e2cbf0d2ecd63f2424b7a9726dc76824a29be719b56f27b6094cddc8e",
-            "bytes": 90090,
-            "decodedSha256": "ecadd69aa86fb65e63ea9c9a1ee927c5093825b8b281c7be4483f794f8c14e6a",
-            "decodedBytes": 430466
+            "path": "Build/20260726-163512.framework.js.unityweb",
+            "sha256": "606790bfdd4625f06337f29358693ea5b0690822722eefdf796c60393325aaf3",
+            "bytes": 90102,
+            "decodedSha256": "56417862ffcb401b8b357e3b86fe215003e9277db9763141b4f0880cc0ecf93f",
+            "decodedBytes": 430660
         },
         {
-            "path": "Build/RogueMaulMobileWebRelease.loader.js",
-            "sha256": "7ebf370205507c7152bafb54d79ea372b883655ef3a76ba41b587b9e84441d06",
+            "path": "Build/20260726-163512.loader.js",
+            "sha256": "e091964b2feae629ab035e1de16e7c8eed58bac4e19a2844d74b6737d7d1857a",
             "bytes": 47866,
             "decodedSha256": "",
             "decodedBytes": 0
         },
         {
-            "path": "Build/RogueMaulMobileWebRelease.wasm.unityweb",
-            "sha256": "f4da8a289b1e779fb6baf5a2f1973f840aa346dbdfcad7837bd418a8e8e21942",
-            "bytes": 7145121,
-            "decodedSha256": "7a30d2070d7405d6ec7a1528f30587b643f1c8f6bce2f5068c47524e4d296197",
-            "decodedBytes": 23576979
+            "path": "Build/20260726-163512.wasm.unityweb",
+            "sha256": "2760db5cce9492051015c52625fae79bfd75d8d617bbf89a8ffc1a1a05660da1",
+            "bytes": 7161313,
+            "decodedSha256": "70baaae35f2a8ae3ce4f7c75214695dc51337c003ce5d0ea45b1c11e88d142b7",
+            "decodedBytes": 23626258
         },
         {
             "path": "TemplateData/icon-192.png",
@@ -53,8 +53,8 @@
         },
         {
             "path": "index.html",
-            "sha256": "c8f6793c90537e30ab2f6c3690ca5adb78a0bd6be9088f50f9ea5f6c0faa9641",
-            "bytes": 17779,
+            "sha256": "b849902f0cda57b5d9703268c8635121c2a6a0dead08739c77660a80c0b153f5",
+            "bytes": 17739,
             "decodedSha256": "",
             "decodedBytes": 0
         },
