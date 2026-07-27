@@ -1,34 +1,34 @@
 {
     "schemaVersion": 1,
-    "revision": "49a0e624129057f2",
+    "revision": "3654d915b7938637",
     "files": [
         {
-            "path": "Build/20260727-034327.data.unityweb",
-            "sha256": "9e6c92db9c592299af28bf2e16783db3c9538297b7996a29c882ac4b4e35b5a1",
-            "bytes": 1584937,
-            "decodedSha256": "bdb813a1da1534d55c0787cd4665b8195be7c910b1539b23635b55cd5c2c122d",
-            "decodedBytes": 5767442
+            "path": "Build/RogueMaulMobileWebRelease.data.unityweb",
+            "sha256": "3c5cec93289d1e6d26de242f6d954678ea3d032304dd8c9a504d599e0c3536b1",
+            "bytes": 1585250,
+            "decodedSha256": "44c434d0b98a8b64f01b19cfb5b77a3b9d54e4291833f8ffe9a21ade98ceab6c",
+            "decodedBytes": 5768774
         },
         {
-            "path": "Build/20260727-034327.framework.js.unityweb",
-            "sha256": "d646ce9b41e7edcbf486473aa12d43e7ee1ef32a2a61d7125803d44b4cb6e9cc",
+            "path": "Build/RogueMaulMobileWebRelease.framework.js.unityweb",
+            "sha256": "ff6b42dc1619d46eec8cf0fcbffcd761599772b28f6841cfc282c6b56b23abff",
             "bytes": 90109,
             "decodedSha256": "7f39ff025a6b02ee74d051240cb7bc0090d8c922aba1712fa2deedc2df65f991",
             "decodedBytes": 430660
         },
         {
-            "path": "Build/20260727-034327.loader.js",
-            "sha256": "0868bf1f0af273a7195ba0fc0ff6bbfdd08cb24ac6308f135c7c3847e8356ace",
+            "path": "Build/RogueMaulMobileWebRelease.loader.js",
+            "sha256": "4aa58ab61158aadf2c48042fc7f5080fb6263c1e6f5a1d95a71c5384b9add273",
             "bytes": 47866,
             "decodedSha256": "",
             "decodedBytes": 0
         },
         {
-            "path": "Build/20260727-034327.wasm.unityweb",
-            "sha256": "1deacbefc13865d7e3eb9fab2ecf9a55586b9899ebebd5b4da9a7866999054ee",
-            "bytes": 7163073,
-            "decodedSha256": "06a9649768099918994262d32293ebe5c032ce686b059efa26475fe7aff568f8",
-            "decodedBytes": 23665096
+            "path": "Build/RogueMaulMobileWebRelease.wasm.unityweb",
+            "sha256": "1cf43a4225d255fd241d0a559f8ff96a3fdf2688c51ced5a5da9a86758a15ed8",
+            "bytes": 7160744,
+            "decodedSha256": "2e4fcb35edb84b62b9147a34fbbe0443edab5881dfa4cb8affa4f56abe73d3d2",
+            "decodedBytes": 23669724
         },
         {
             "path": "TemplateData/icon-192.png",
@@ -53,8 +53,8 @@
         },
         {
             "path": "index.html",
-            "sha256": "862762db47e843a91fffeb91a7d7b65c234dfda464aade36040813180a8ba098",
-            "bytes": 17739,
+            "sha256": "c8f6793c90537e30ab2f6c3690ca5adb78a0bd6be9088f50f9ea5f6c0faa9641",
+            "bytes": 17779,
             "decodedSha256": "",
             "decodedBytes": 0
         },
