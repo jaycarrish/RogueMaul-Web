@@ -1,6 +1,6 @@
 const scopePath = new URL(self.registration.scope).pathname;
 const cachePrefix = "RogueMaul-" + encodeURIComponent(scopePath) + "-";
-const buildRevision = "c37b147e143f07f7";
+const buildRevision = "49a0e624129057f2";
 const cacheName = cachePrefix + "1.1.0-" + buildRevision;
 const releaseManifestPath = "release-manifest.json";
 const contentToCache = [
@@ -9,10 +9,10 @@ const contentToCache = [
   "TemplateData/style.css",
   "TemplateData/icon-192.png",
   "TemplateData/icon-512.png",
-  "Build/20260726-203245.loader.js",
-  "Build/20260726-203245.framework.js.unityweb",
-  "Build/20260726-203245.data.unityweb",
-  "Build/20260726-203245.wasm.unityweb"
+  "Build/20260727-034327.loader.js",
+  "Build/20260727-034327.framework.js.unityweb",
+  "Build/20260727-034327.data.unityweb",
+  "Build/20260727-034327.wasm.unityweb"
 ];
 
 self.addEventListener("install", event => {
