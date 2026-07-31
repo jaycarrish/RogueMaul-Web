@@ -55,7 +55,6 @@
       <h2>ROTATE TO LANDSCAPE</h2>
       <p>Rogue Maul uses the full width for the battlefield and command deck.</p>
     </section>
-    <div id="unity-warning" aria-live="assertive"></div>
   </main>
   <script>
     const canvas = document.querySelector("#unity-canvas");
@@ -75,7 +74,6 @@
     const legacySaveRecovery = document.querySelector("#legacy-save-recovery");
     const legacySaveButton = document.querySelector("#legacy-save-button");
     const openDirectButton = document.querySelector("#open-direct-button");
-    const warningBanner = document.querySelector("#unity-warning");
     let unityStarted = false;
     let viewportFrame = 0;
     let storagePersistenceRequest = null;
@@ -85,12 +83,12 @@
     let legacyRecoveryRequested = false;
 
     const buildUrl = "Build";
-    const loaderUrl = buildUrl + "/20260731-115134.loader.js";
+    const loaderUrl = buildUrl + "/20260731-233107.loader.js";
     const config = {
       arguments: [],
-      dataUrl: buildUrl + "/20260731-115134.data.unityweb",
-      frameworkUrl: buildUrl + "/20260731-115134.framework.js.unityweb",
-      codeUrl: buildUrl + "/20260731-115134.wasm.unityweb",
+      dataUrl: buildUrl + "/20260731-233107.data.unityweb",
+      frameworkUrl: buildUrl + "/20260731-233107.framework.js.unityweb",
+      codeUrl: buildUrl + "/20260731-233107.wasm.unityweb",
       streamingAssetsUrl: "StreamingAssets",
       companyName: "Jay Carr",
       productName: "Rogue Maul",
@@ -98,8 +96,7 @@
       // RogueMaulWeb.jslib owns serialized syncfs calls so save state is
       // reported only after IndexedDB confirms persistence.
       autoSyncPersistentDataPath: false,
-      devicePixelRatio: Math.min(window.devicePixelRatio || 1, 1.35),
-      showBanner: showBanner
+      devicePixelRatio: Math.min(window.devicePixelRatio || 1, 1.35)
     };
 
     function setProgress(value) {
@@ -110,12 +107,9 @@
       loadingStatus.textContent = percent < 35 ? "Loading battlefield data..." : percent < 85 ? "Forging towers and routes..." : "Opening the command deck...";
     }
 
-    function showBanner(message, type) {
-      const item = document.createElement("div");
-      item.className = "banner " + (type || "info");
-      item.textContent = message;
-      warningBanner.appendChild(item);
-      if (type !== "error") setTimeout(() => item.remove(), 7000);
+    function reportBackgroundStatus(message, type) {
+      const level = type === "error" ? "error" : type === "warning" ? "warn" : "info";
+      console[level]("[Rogue Maul] " + String(message || ""));
     }
 
     function showFatal(message) {
@@ -181,7 +175,7 @@
       storagePersistenceRequest = (async () => {
         if (!navigator.storage || typeof navigator.storage.persist !== "function") {
           storagePersistenceStatus = "unsupported";
-          showBanner("This iPhone uses best-effort browser storage. Back up progression from Command Web after every session.", "warning");
+          reportBackgroundStatus("This iPhone uses best-effort browser storage. Back up progression from Command Web after every session.", "warning");
           return false;
         }
         try {
@@ -189,11 +183,11 @@
             && await navigator.storage.persisted();
           const persistent = alreadyPersistent || await navigator.storage.persist();
           storagePersistenceStatus = persistent ? "granted" : "best-effort";
-          if (!persistent) showBanner("iPhone storage remains best-effort. Keep Rogue Maul installed and open it periodically.", "warning");
+          if (!persistent) reportBackgroundStatus("iPhone storage remains best-effort. Keep Rogue Maul installed and open it periodically.", "warning");
           return persistent;
         } catch (error) {
           storagePersistenceStatus = "unavailable";
-          showBanner("Persistent browser storage is unavailable: " + error.message, "warning");
+          reportBackgroundStatus("Persistent browser storage is unavailable: " + error.message, "warning");
           return false;
         }
       })();
@@ -237,22 +231,22 @@
       try {
         registration = await navigator.serviceWorker.register("ServiceWorker.js");
       } catch (error) {
-        showBanner("Offline install is unavailable: " + error.message, "warning");
+        reportBackgroundStatus("Offline install is unavailable: " + error.message, "warning");
         return;
       }
-      const announceWaitingUpdate = () => showBanner("A Rogue Maul update is ready. Close every game tab or installed window, then reopen the game to switch releases safely.", "info");
-      if (registration.waiting && navigator.serviceWorker.controller) announceWaitingUpdate();
+      const recordWaitingUpdate = () => reportBackgroundStatus("A Rogue Maul update is ready. Close every game tab or installed window, then reopen the game to switch releases safely.", "info");
+      if (registration.waiting && navigator.serviceWorker.controller) recordWaitingUpdate();
       registration.addEventListener("updatefound", () => {
         const worker = registration.installing;
         if (!worker) return;
         worker.addEventListener("statechange", () => {
-          if (worker.state === "installed" && navigator.serviceWorker.controller) announceWaitingUpdate();
+          if (worker.state === "installed" && navigator.serviceWorker.controller) recordWaitingUpdate();
         });
       });
       try {
         await registration.update();
       } catch (error) {
-        showBanner(navigator.onLine ? "The update check failed; the installed offline release is still available." : "Offline mode active. The update check will retry when the game is online.", "info");
+        reportBackgroundStatus(navigator.onLine ? "The update check failed; the installed offline release is still available." : "Offline mode active. The update check will retry when the game is online.", "info");
       }
     }
 
@@ -261,7 +255,7 @@
     openDirectButton.addEventListener("click", () => window.open(location.href, "_blank", "noopener"));
     legacySaveButton.addEventListener("click", () => {
       iosInstall.classList.add("hidden");
-      showBanner("Legacy Safari recovery mode: gameplay is disabled; download the existing save, then return to install.", "warning");
+      reportBackgroundStatus("Legacy Safari recovery mode: gameplay is disabled; download the existing save, then return to install.", "warning");
       startGame(true);
     });
     document.addEventListener("contextmenu", event => event.preventDefault());
@@ -274,14 +268,14 @@
 
     canvas.addEventListener("webglcontextlost", event => {
       event.preventDefault();
-      showBanner("Safari paused the graphics context. Waiting briefly for recovery...", "warning");
+      reportBackgroundStatus("Safari paused the graphics context. Waiting briefly for recovery...", "warning");
       clearTimeout(contextRecoveryTimer);
       contextRecoveryTimer = setTimeout(() => showFatal("Safari could not restore graphics. Reload the installed game to continue from the last confirmed save."), 12000);
     });
     canvas.addEventListener("webglcontextrestored", () => {
       clearTimeout(contextRecoveryTimer);
       contextRecoveryTimer = 0;
-      showBanner("Graphics restored.", "info");
+      reportBackgroundStatus("Graphics restored.", "info");
     });
 
     function startGame(legacyRecovery) {
@@ -334,7 +328,7 @@
     });
 
     window.RogueMaulSaveToolsStatus = (message, isError) => {
-      showBanner(message, isError ? "error" : "info");
+      reportBackgroundStatus(message, isError ? "error" : "info");
     };
 
     syncVisibleViewport();
