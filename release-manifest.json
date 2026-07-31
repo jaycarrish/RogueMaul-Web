@@ -1,34 +1,34 @@
 {
     "schemaVersion": 1,
-    "revision": "e52c842e8d2ddccd",
+    "revision": "bba3ffd576e29138",
     "files": [
         {
-            "path": "Build/20260727-181313.data.unityweb",
-            "sha256": "5caff26a380a9c7ebda8b9bea094b5a93cff8856b63d13a1465d1946d0abf8b3",
-            "bytes": 25466112,
-            "decodedSha256": "d033d6752b8e7b966c979abe65089639b18ea81cce06a0ae4f0ecec34aafe039",
-            "decodedBytes": 31573137
+            "path": "Build/20260731-115134.data.unityweb",
+            "sha256": "158dfe0a6a88e678ce0a06438dab1372a52841a1bf711a77a930be3df4baf9b0",
+            "bytes": 25477256,
+            "decodedSha256": "2afcd28f42a3dc3bbeb5ec81bc8c556e4cfb60f51422e7d7d6278f5862785644",
+            "decodedBytes": 31600136
         },
         {
-            "path": "Build/20260727-181313.framework.js.unityweb",
-            "sha256": "97e0a16a25e878723ba3109640932b66025e4a96ad1eb18b934d229190e567b7",
-            "bytes": 90107,
-            "decodedSha256": "d0fdbb93e8ec19631eacf2a2c1c71c06d436118f380ae9557275028a8905904b",
-            "decodedBytes": 430660
+            "path": "Build/20260731-115134.framework.js.unityweb",
+            "sha256": "4f7179a1d62fa333bbab94a42f37f83091e754e27e6dcbfa5afb0e751ed2ac9a",
+            "bytes": 90210,
+            "decodedSha256": "41f887651a3012de8fc4d5b387cccac42bbbab2bf57acdbb101078fae1f91e2a",
+            "decodedBytes": 431467
         },
         {
-            "path": "Build/20260727-181313.loader.js",
-            "sha256": "0cddcf2f4f9dffc29d3d3161afbe8757d631007961c6feeb7276bf0179967405",
+            "path": "Build/20260731-115134.loader.js",
+            "sha256": "f504e1363d7de32d4d856ad3a24cc44613025bfbae8e4af4a0190cba4676cbd6",
             "bytes": 47866,
             "decodedSha256": "",
             "decodedBytes": 0
         },
         {
-            "path": "Build/20260727-181313.wasm.unityweb",
-            "sha256": "c53362c1f1dcf42d61b35b621f0247ec617945d0e859da5c79c068e2abe7f6f4",
-            "bytes": 7169261,
-            "decodedSha256": "3a3da84b458b08604707f424db7b6818d966fbb65c5ed12acffc5edff6e0a8e2",
-            "decodedBytes": 23720399
+            "path": "Build/20260731-115134.wasm.unityweb",
+            "sha256": "7acfc034a0170bc10b33bf7af61525be6e3bd24459dc3a31335756fe89354650",
+            "bytes": 7240869,
+            "decodedSha256": "c1707c07d57c4ef68b84c40cfa50ad08b7655f64a1a0257bbb873a1509a6913b",
+            "decodedBytes": 23942616
         },
         {
             "path": "TemplateData/icon-192.png",
@@ -53,7 +53,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "03ab6f2068269e5d2441f34a95e2a3e6690733b287b7182e888a87e93ed66d62",
+            "sha256": "f9d693fc865d8eaf11cda23c97874efada0be5c5be7e3cf69f2d17077061a3a1",
             "bytes": 17739,
             "decodedSha256": "",
             "decodedBytes": 0

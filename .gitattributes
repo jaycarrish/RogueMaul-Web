@@ -1,0 +1,6 @@
+/Build/** -text
+/TemplateData/** -text
+/index.html -text
+/manifest.webmanifest -text
+/release-manifest.json -text
+/ServiceWorker.js -text
