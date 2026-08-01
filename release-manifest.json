@@ -1,33 +1,33 @@
 {
     "schemaVersion": 1,
-    "revision": "90b9e69051773294",
+    "revision": "292502d29f03c4f0",
     "files": [
         {
-            "path": "Build/20260801-022115.data.unityweb",
-            "sha256": "f3546a4597acda9920d32bf0e78e5d38aa80556870913802b1257f1eee722247",
-            "bytes": 3159781,
-            "decodedSha256": "381a775050aebd82454dca53c877866f022bbe6d66f7358b96069ba250b07d98",
+            "path": "Build/20260801-023750.data.unityweb",
+            "sha256": "50ab622efb63e71947a5a7def75130c25f6e95a19f46e036d877eea8cfd2aa03",
+            "bytes": 3159398,
+            "decodedSha256": "8fa667963e555bd87936bcab30a2d91023ead836f95f75989cff729bf1146bea",
             "decodedBytes": 7513002
         },
         {
-            "path": "Build/20260801-022115.framework.js.unityweb",
-            "sha256": "b5a341622642f0a1262086e1bc6b4051ed2971a19b0a1da2e29899ad056b0d2c",
+            "path": "Build/20260801-023750.framework.js.unityweb",
+            "sha256": "bb41790a846cb0fa22e23975e06b807a55b4394de2579a980f848ed610b56de3",
             "bytes": 90252,
             "decodedSha256": "92b0cb635d8a11987a6311f547d067949ceb02e6e7d26fc646719bb820f3e4f0",
             "decodedBytes": 431950
         },
         {
-            "path": "Build/20260801-022115.loader.js",
+            "path": "Build/20260801-023750.loader.js",
             "sha256": "272b422a2d46907eac16005d3502682f36981723b0cd7e44c56e733296f51c62",
             "bytes": 47866,
             "decodedSha256": "",
             "decodedBytes": 0
         },
         {
-            "path": "Build/20260801-022115.wasm.unityweb",
-            "sha256": "f8cb062bdbb1015f5d6851d75c29ee2d4d737729bf2fe037644ee2dd96de128e",
-            "bytes": 7275162,
-            "decodedSha256": "a5563d4d5243eb8d617440a3fc3aa43d8954b82d153284e1f6cce292c61a6bd4",
+            "path": "Build/20260801-023750.wasm.unityweb",
+            "sha256": "d43ae768c276dbb71e6b07738163cec40401b5125898d1efd3a05de475fc8eef",
+            "bytes": 7275146,
+            "decodedSha256": "614e84d23ab4cfa627d1b5c04613d060db103d1b930de149bc09e7ab1b1a83b8",
             "decodedBytes": 24080477
         },
         {
@@ -53,7 +53,7 @@
         },
         {
             "path": "index.html",
-            "sha256": "db0db703fb29b3093ba1c9a34454200ed5e32abfbc3e2405a828451bd2635598",
+            "sha256": "e4269c9370e6728360507a395146fa456871d68fe70b1d6639a2c6c96d4fb2bb",
             "bytes": 16132,
             "decodedSha256": "",
             "decodedBytes": 0
