@@ -1,30 +1,30 @@
 {
     "schemaVersion": 1,
-    "revision": "292502d29f03c4f0",
+    "revision": "560ca5df6c30f8bb",
     "files": [
         {
-            "path": "Build/20260801-023750.data.unityweb",
-            "sha256": "50ab622efb63e71947a5a7def75130c25f6e95a19f46e036d877eea8cfd2aa03",
-            "bytes": 3159398,
-            "decodedSha256": "8fa667963e555bd87936bcab30a2d91023ead836f95f75989cff729bf1146bea",
+            "path": "Build/RogueMaulUIVerticalSliceWebGL-20260806-000055.data.unityweb",
+            "sha256": "2c0a8c46f3b5dde84d96eb70b1fa12907dd5e5affde7b8003561304e3b62d0d0",
+            "bytes": 3159782,
+            "decodedSha256": "1624acd6fa29b7eeb8986901ac96e0e40297ebc03c30df2077282ecaf6f9e9a4",
             "decodedBytes": 7513002
         },
         {
-            "path": "Build/20260801-023750.framework.js.unityweb",
+            "path": "Build/RogueMaulUIVerticalSliceWebGL-20260806-000055.framework.js.unityweb",
             "sha256": "bb41790a846cb0fa22e23975e06b807a55b4394de2579a980f848ed610b56de3",
             "bytes": 90252,
             "decodedSha256": "92b0cb635d8a11987a6311f547d067949ceb02e6e7d26fc646719bb820f3e4f0",
             "decodedBytes": 431950
         },
         {
-            "path": "Build/20260801-023750.loader.js",
+            "path": "Build/RogueMaulUIVerticalSliceWebGL-20260806-000055.loader.js",
             "sha256": "272b422a2d46907eac16005d3502682f36981723b0cd7e44c56e733296f51c62",
             "bytes": 47866,
             "decodedSha256": "",
             "decodedBytes": 0
         },
         {
-            "path": "Build/20260801-023750.wasm.unityweb",
+            "path": "Build/RogueMaulUIVerticalSliceWebGL-20260806-000055.wasm.unityweb",
             "sha256": "d43ae768c276dbb71e6b07738163cec40401b5125898d1efd3a05de475fc8eef",
             "bytes": 7275146,
             "decodedSha256": "614e84d23ab4cfa627d1b5c04613d060db103d1b930de149bc09e7ab1b1a83b8",
@@ -53,8 +53,8 @@
         },
         {
             "path": "index.html",
-            "sha256": "e4269c9370e6728360507a395146fa456871d68fe70b1d6639a2c6c96d4fb2bb",
-            "bytes": 16132,
+            "sha256": "fd057061b29aeb682ce9930a01254131e8beb4107cf2e2b235a0f18cc50dfacf",
+            "bytes": 16252,
             "decodedSha256": "",
             "decodedBytes": 0
         },
